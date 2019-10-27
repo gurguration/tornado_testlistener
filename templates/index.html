@@ -3,24 +3,72 @@
   <head>
     <style>
       body { margin: 0px; padding: 20px; }
-      #received { width: 500px; height: 400px; border: 1px solid #dedede; overflow-y:scroll;}
-      #sent { width: 500px; } 
+      #received { width: 400px; height: 400px; border: 1px solid #dedede; overflow-y:scroll; 
+       }
+      #clear { float: left}
+      #sent { width: 400px; float: right;} 
+      #sched {width: 400px; height: 400px ; float: right; margin-right: 55px;}
+      #select { width: 400px; height: 400px; float:left;}
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="application/javascript" src={{ static_url('main.js') }}></script>
+    <script src="{{ static_url('test.js') }}" type="application/javascript"></script>
   </head>
   <body>
-  <h1>ლისენერზე მიღებული გზავნილები</h1>
 
-  <p>მიღებული</p>
-  <div id="received">
-  </div>
-  <button id="clear">გაწმენდა</button>
-  
-  <p>ბრძანების გაგზავნა</p>
   <form id="sent">
+      <p><h2>ბრძანების გაგზავნა</h2></p>
     <input type="text" id="cmd_value">
+    <br>
     <button id="cmd_send">გაგზავნა</button>
   </form>
+ 
+  <!-- <h2>აირჩიეთ გრაფიკის თარიღი</h2> -->
+  <form id="sched" name="dates" method='post' action="#">
+      <p>   
+          <h2>აირჩიეთ თარიღი </h2>
+        </p>
+  <select  id="select" size="20" name="grafiki">
+    {% for i in range(len(schedule)) %} 
+          <option id="opt_val" value="{{schedule[i]}}">
+              {{schedule[i]}}
+          </option>
+    {% end %}
+ </select>
+     <p>
+     <input id="opt_send" type="submit"
+     value="გაგზავნა">
+     </p>
+   </form>
+  <p>   
+    <h2>ლისენერზე მიღებული გზავნილები</h2>
+  </p>
+   <div id="received">
+   </div>
+   <button id="clear">გაწმენდა</button>
+   
+   <br><br>
+   <div>
+     <h2>გრაფიკის ატვირთვა</h2>
+   <form action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" placeholder="აირჩიეთ ფაილი" required="required">
+    <button type="submit">ატვირთვა</button>
+    </form>
+    </div>
+
+</form>
+<br><br><br>
+
+<h2>ატვირთული გრაფიკების გასაახლებლად დააჭირეთ "განახლებას"</h2>
+<input type="submit" value="განახლება" id="reload-button" /><br/>
+data
+
+<br><br><br>
+  <div  id="socket_devices">
+      <p>
+        <h3>დაკავშირებული მოწყობილობები:</h3>
+      </p>
+  </div>
+
   </body>
 </html>

@@ -1,13 +1,17 @@
 $(document).ready(function(){
 
     var received = $('#received');
-	
+    var devices = $('#socket_devices')
 
     var socket = new WebSocket("ws://localhost:8000/ws");
      
     socket.onopen = function(){  
       console.log("connected:"); 
+      devices.append('<p>'+ socket + '</p>')
+      console.log(devices)
+      console.log(socket)
     }; 
+ 
     socket.onmessage = function (message) {
       console.log("receiving: " + message.data);
     //   received.empty()
@@ -27,8 +31,16 @@ $(document).ready(function(){
 
 
     // GUI Stuff
-
-
+ 
+    // SCHEDULE send date to device
+    $("#opt_send").click(function(ev){
+      ev.preventDefault();
+      var date = $('#select').val();
+      sendMessage({ 'data' : date});
+      console.log('clicked send')
+      console.log(date)
+      //$('#opt_val').val("")
+    });
     // send a command to the serial port
     $("#cmd_send").click(function(ev){
       ev.preventDefault();
