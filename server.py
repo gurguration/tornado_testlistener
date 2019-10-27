@@ -22,9 +22,10 @@ class IndexHandler(web.RequestHandler):
     def post(self):
         action = self.get_argument('action')
         if action == 'reload':
-            print('Restarting')
             logging.info('Restarting server...')
-            subprocess.run('')
+            subprocess.run(['supervisorctl',  'restart tornado_listener'], check=True)
+            print('Restarting')
+            exit()
 
 class UploadFileHander(web.RequestHandler):
     def post(self):
@@ -39,6 +40,10 @@ class WebSocketHandler(websocket.WebSocketHandler):
         print ('new http connection')
         clients.append(self)
         self.write_message("connected to websocket")
+
+#    def check_origin(self, origin):
+#        print(f'origin is: {origin}')
+#        return True
 
     def on_message(self, message):
         print('tornado received from client: %s' % message)
@@ -71,12 +76,12 @@ if __name__ == '__main__':
         # print('inside check queue')
         if not output_queue.empty():
             message = output_queue.get()
-            print ("tornado received from raspberry: ", message)
+            print ("tornado received from device: ", message)
             for c in clients:
                 c.write_message(message)
         if not input_queue.empty():
             message = input_queue.get()
-            print('processing output queue')
+            print('processing input queue')
             for d in devices:
                 d.write(message.encode())
 
@@ -84,7 +89,6 @@ if __name__ == '__main__':
                 
     server = TcpListener()
     server.listen(options.listener_port)
-    data = {'status': 'initialized'}
     app = web.Application(
         [
             (r'/', IndexHandler),
@@ -103,5 +107,6 @@ if __name__ == '__main__':
     scheduler.start()
     webserver = httpserver.HTTPServer(app)
     webserver.listen(options.port)
-    print(f'Web Application listening on port {options.port}...')
+    print(f'Web application listening on port {options.port}...')
+    print(f'Socket application listening on port {options.listener_port}...')
     mainLoop.start()

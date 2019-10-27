@@ -1,14 +1,18 @@
 $(document).ready(function() {
     $('#reload-button').click(function(event) {
         jQuery.ajax({
-            url: '//localhost:8000/',
+            url: '//sk3.mygps.ge:8000/',
             type: 'POST',
             dataType: 'json',
             data: {
                 action: 'reload',
             },          
             success: function() {
-                window.location.reload(true);
+		if (true){
+		setTimeout(function(){
+                location.reload(true);
+		}, 1000);
+		}
             }
         });
     });

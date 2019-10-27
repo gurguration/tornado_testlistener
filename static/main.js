@@ -3,7 +3,7 @@ $(document).ready(function(){
     var received = $('#received');
     var devices = $('#socket_devices')
 
-    var socket = new WebSocket("ws://0.0.0.0:8888/ws");
+    var socket = new WebSocket("ws://sk3.mygps.ge:8000/ws");
      
     socket.onopen = function(){  
       console.log("connected:"); 
