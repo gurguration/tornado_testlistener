@@ -13,6 +13,8 @@ clients = []
 devices = []
 
 
+#
+
 class IndexHandler(web.RequestHandler):
     def get(self):
         self.render('index.html', schedule=timeSchedule)
@@ -22,6 +24,7 @@ class IndexHandler(web.RequestHandler):
         if action == 'reload':
             print('Restarting')
             logging.info('Restarting server...')
+            subprocess.run('')
 
 class UploadFileHander(web.RequestHandler):
     def post(self):
@@ -53,7 +56,7 @@ class TcpListener(TCPServer):
         while True:
             try:
                 data = await stream.read_until(b'\n')
-                print(dir(stream))
+                #print(dir(stream))
                 if data:
                     output_queue.put(data)
                 # await stream.write(data + b'REPLY FROM ECHO SERVER!')

@@ -3,7 +3,7 @@ $(document).ready(function(){
     var received = $('#received');
     var devices = $('#socket_devices')
 
-    var socket = new WebSocket("ws://localhost:8000/ws");
+    var socket = new WebSocket("ws://localhost:8888/ws");
      
     socket.onopen = function(){  
       console.log("connected:"); 
