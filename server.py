@@ -11,13 +11,14 @@ input_queue = multiprocessing.Queue()
 output_queue = multiprocessing.Queue()
 clients = []
 devices = []
-
+addresses = []
 
 #
 
 class IndexHandler(web.RequestHandler):
     def get(self):
-        self.render('index.html', schedule=timeSchedule)
+        print(devices)
+        self.render('index.html', schedule=timeSchedule, device=addresses)
     
     def post(self):
         action = self.get_argument('action')
@@ -39,11 +40,16 @@ class WebSocketHandler(websocket.WebSocketHandler):
     def open(self):
         print ('new http connection')
         clients.append(self)
-        self.write_message("connected to websocket")
+        self.write_message(f"connected to websocket")
 
 #    def check_origin(self, origin):
 #        print(f'origin is: {origin}')
 #        return True
+
+    def on_close(self):
+        print('socket closed')
+        self.close()
+        clients.pop()
 
     def on_message(self, message):
         print('tornado received from client: %s' % message)
@@ -58,6 +64,7 @@ class StaticFileHandler(web.RequestHandler):
 class TcpListener(TCPServer):
     async def handle_stream(self, stream, address):
         devices.append(stream)
+        addresses.append(address)
         while True:
             try:
                 data = await stream.read_until(b'\n')
@@ -66,8 +73,9 @@ class TcpListener(TCPServer):
                     output_queue.put(data)
                 # await stream.write(data + b'REPLY FROM ECHO SERVER!')
             except StreamClosedError:
+                print('closed stream')
+                devices.pop() 
                 break
-            
 
 
 if __name__ == '__main__':
@@ -76,13 +84,13 @@ if __name__ == '__main__':
         # print('inside check queue')
         if not output_queue.empty():
             message = output_queue.get()
-            print ("tornado received from device: ", message)
-            for c in clients:
+            print ("tornado received from device: ", message) #these are WEBSOCKETS
+            for c in clients:                       # there are websockets clients
                 c.write_message(message)
-        if not input_queue.empty():
+        if not input_queue.empty():                # messages received from web to send to devices
             message = input_queue.get()
             print('processing input queue')
-            for d in devices:
+            for d in devices:                       #there are TCPserver stream objects
                 d.write(message.encode())
 
 

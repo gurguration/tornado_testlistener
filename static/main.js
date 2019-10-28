@@ -7,9 +7,9 @@ $(document).ready(function(){
      
     socket.onopen = function(){  
       console.log("connected:"); 
-      devices.append('<p>'+ socket + '</p>')
-      console.log(devices)
-      console.log(socket)
+    //  devices.append('<p>'+ socket + '</p>')
+    //  console.log(devices)
+    //  console.log(socket)
     }; 
  
     socket.onmessage = function (message) {
@@ -22,6 +22,7 @@ $(document).ready(function(){
 
     socket.onclose = function(){
       console.log("disconnected"); 
+//	    socket.close()
     };
 
     var sendMessage = function(message) {

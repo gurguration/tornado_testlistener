@@ -65,9 +65,12 @@
 
 <br><br><br>
   <div  id="socket_devices">
+	  <h2>დაკავშირებული მოწყობილობები</h2>
+	  {% for dev in device %}
       <p>
-        <h3>დაკავშირებული მოწყობილობები:</h3>
+	<h3>{{dev}}</h3>
       </p>
+      {% end %}
   </div>
 
   </body>
